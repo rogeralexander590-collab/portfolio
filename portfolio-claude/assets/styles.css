@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,300;1,9..144,600&family=JetBrains+Mono:wght@300;400;500;700&family=Geist:wght@300;400;500;600;700;900&display=swap');
+
+/* ─── Design tokens ─────────────────────────────────────────── */
+:root {
+  --bg: #f4f1ea;
+  --bg-dark: #0e0e0e;
+  --ink: #0e0e0e;
+  --paper: #faf8f3;
+  --accent: #ff4d1a;
+  --accent-yellow: #ffe14a;
+  --accent-blue: #2d4eff;
+  --accent-green: #1ec45a;
+  --line: rgba(14,14,14,0.12);
+  --muted: rgba(14,14,14,0.55);
+}
+
+/* ─── Reset ─────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── Custom cursor ─────────────────────────────────────────── */
+.cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: var(--ink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: difference;
+  transition: width 0.2s, height 0.2s, background 0.2s;
+  top: 0;
+  left: 0;
+}
+
+.cursor.hover { width: 48px; height: 48px; background: var(--accent); }
+
+.cursor.drag { width: 80px; height: 80px; }
+.cursor.drag::after {
+  content: 'DRAG';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Film grain overlay ─────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+}
+
+/* ─── Ticker ─────────────────────────────────────────────────── */
+.ticker {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 0;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--ink);
+  position: relative;
+  z-index: 100;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: scroll 40s linear infinite;
+  width: max-content;
+}
+
+.ticker-track span {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.ticker-track span::after {
+  content: '✦';
+  color: var(--accent);
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────── */
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes rise {
+  to { transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ─── Nav ────────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  pointer-events: none;
+}
+
+/* Shared pill style for all nav items */
+.nav-logo,
+.nav-status,
+.nav-back,
+.nav-progress {
+  pointer-events: auto;
+  background: var(--paper);
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--ink);
+}
+
+/* Portfolio nav — logo */
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 20px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+/* Portfolio nav — status badge */
+.nav-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #1ec45a;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #1ec45a;
+  animation: pulse 2s ease infinite;
+}
+
+/* Case study nav — back link */
+.nav-back {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.nav-back .arrow {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 16px;
+}
+
+/* Case study nav — reading progress */
+.nav-progress {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar {
+  width: 80px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* ─── Section primitives ─────────────────────────────────────── */
+.section {
+  padding: 100px 32px;
+  border-top: 1px solid var(--ink);
+  position: relative;
+}
+
+.section-num {
+  position: absolute;
+  top: 100px;
+  right: 32px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+.section-num strong {
+  color: var(--accent);
+  font-size: 60px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  display: block;
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(40px, 7vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  margin-bottom: 60px;
+  max-width: 1100px;
+}
+
+/* ─── Utility ────────────────────────────────────────────────── */
+.italic { font-style: italic; color: var(--accent); font-weight: 300; }
+
+/* ─── Footer ─────────────────────────────────────────────────── */
+footer {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  body { cursor: auto; }
+  .cursor { display: none; }
+  .section { padding: 60px 24px; }
+  .section-num { position: static; margin-bottom: 24px; text-align: left; }
+  nav { top: 16px; padding: 0 16px; }
+}
